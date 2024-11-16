@@ -1,5 +1,5 @@
 # Assignment 2: Classify
-## abs.s
-Take the absolute value of numbers less than 0.
+I think the main focus this time is to write about the multiplier and dot.s.
+Therefore, the document will primarily explain the multiplier and dot.s.
 
-## 
+# Multiplier
