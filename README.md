@@ -5,13 +5,16 @@ while other explanations will be provided in the comments within the code.
 
 # Multiplier
 ```riscv=
-FUNCTION: Multilply 2 numbers   
-Args:   
-   a0 (int): multiplier   
-   a1 (int): multiplicand   
-Returns:   
-  a0 (int):   answer   
-
+# =======================================================
+# FUNCTION: Multilply 2 numbers
+#
+# Args:
+#   a0 (int): multiplier
+#   a1 (int): multiplicand
+#
+# Returns:
+#   a0 (int):   answer
+# =======================================================
 multiply:
     li t2, 0                  # Initialize result
     beqz a0, end_multiply         # Exit if multiplicand (a1) is zero
