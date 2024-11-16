@@ -1,15 +1,15 @@
 # Assignment 2: Classify
 my origin multiplier
-# =======================================================
-# FUNCTION: Multilply 2 numbers
-#
-# Args:
-#   a0 (int): multiplier
-#   a1 (int): multiplicand
-#
-# Returns:
-#   a0 (int):   answer 
-# =======================================================
+=======================================================
+FUNCTION: Multilply 2 numbers
+
+Args:
+   a0 (int): multiplier
+   a1 (int): multiplicand
+
+ Returns:
+   a0 (int):   answer 
+=======================================================
 multiply:      
     li t0, 0                  # Initialize result
     
