@@ -35,3 +35,4 @@ end_multiply:
     mv a0, t2
     ret
 ```
+First, check if the least significant bit of the multiplier is 1. If it is, add the multiplicand to the accumulated result; otherwise, skip the addition. Then, shift the multiplicand one bit to the left and simultaneously shift the multiplier one bit to the right. The multiplication operation ends when either the multiplier or the multiplicand becomes 0.
