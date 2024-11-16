@@ -25,12 +25,27 @@ argmax:
     li t6, 1
     blt a1, t6, handle_error
 
-    lw t0, 0(a0)
+    lw t0, 0(a0)    # t0 = array[index] 
 
-    li t1, 0
-    li t2, 1
+    li t1, 0        
+    li t2, 1        # t2 = index
 loop_start:
     # TODO: Add your own implementation
+    beq t2, a1, loop_end # if index == a1 -> end
+    slli t3, t2, 2       # t3 = 4 * index
+    add t4, t3, a0       # t4 = pointer + 4 * index
+    lw t3, 0(t4)         # t3 = array[index]
+    ble t3, t0, loop     # if array[index] =< t0 -> next_loop
+    add t0, t3, x0       # t0 = t3
+    add t1, t2, x0       # t1 = t2
+    
+loop:
+    addi t2, t2, 1
+    j loop_start 
+
+loop_end:
+    add a0, t1, x0
+    ret
 
 handle_error:
     li a0, 36

@@ -34,7 +34,7 @@ classify:
     
     # Prolouge
     addi sp, sp, -48
-    
+
     sw ra, 0(sp)
     
     sw s0, 4(sp) # m0 matrix
@@ -53,7 +53,6 @@ classify:
     sw s10, 44(sp) # o
     
     # Read pretrained m0
-    
     addi sp, sp, -12
     
     sw a0, 0(sp)
@@ -120,7 +119,7 @@ classify:
     addi sp, sp, 12
 
     # Read input matrix
-    
+
     addi sp, sp, -12
     
     sw a0, 0(sp)
@@ -152,7 +151,7 @@ classify:
     lw a2, 8(sp)
     
     addi sp, sp, 12
-
+    
     # Compute h = matmul(m0, input)
     addi sp, sp, -28
     
@@ -166,7 +165,12 @@ classify:
     
     lw t0, 0(s3)
     lw t1, 0(s8)
+
     # mul a0, t0, t1 # FIXME: Replace 'mul' with your own implementation
+    add a0, t0, x0
+    add a1, t1, x0
+    jal multiply
+    
     slli a0, a0, 2
     jal malloc 
     beq a0, x0, error_malloc
@@ -205,6 +209,12 @@ classify:
     lw t1, 0(s8)
     # mul a1, t0, t1 # length of h array and set it as second argument
     # FIXME: Replace 'mul' with your own implementation
+    mv t2, a0
+    mv a0, t0
+    mv a1, t1
+    jal multiply
+    mv a1, a0
+    mv a0, t2
     
     jal relu
     
@@ -227,6 +237,10 @@ classify:
     lw t0, 0(s3)
     lw t1, 0(s6)
     # mul a0, t0, t1 # FIXME: Replace 'mul' with your own implementation
+    add a0, t0, x0
+    add a1, t1, x0
+    jal multiply
+    
     slli a0, a0, 2
     jal malloc 
     beq a0, x0, error_malloc
@@ -286,8 +300,15 @@ classify:
     mv a0, s10 # load o array into first arg
     lw t0, 0(s3)
     lw t1, 0(s6)
-    mul a1, t0, t1 # load length of array into second arg
+
+    # mul a1, t0, t1 # load length of array into second arg
     # FIXME: Replace 'mul' with your own implementation
+    mv t2, a0
+    add a0, t0, x0
+    add a1, t1, x0
+    jal multiply
+    mv a1, a0
+    mv a0, t2
     
     jal argmax
     
@@ -384,3 +405,32 @@ error_args:
 error_malloc:
     li a0, 26
     j exit
+
+# =======================================================
+# FUNCTION: Multilply 2 numbers
+#
+# Args:
+#   a0 (int): multiplier
+#   a1 (int): multiplicand
+#
+# Returns:
+#   a0 (int):   answer 
+# =======================================================
+multiply:      
+    li t0, 0                  # Initialize result
+    
+multiply_loop:
+    beqz a0, end_multiply         # Exit if multiplier (t8) is zero
+    andi t1, a0, 1               # Check if lowest bit of multiplier is 1
+    beqz t1, skip_addition       # If not, skip addition
+    add t0, t0, a1                # Add multiplicand to result
+
+skip_addition:
+    slli a1, a1, 1                # Shift multiplicand left
+    srli a0, a0, 1                # Shift multiplier right
+    j multiply_loop               # Repeat
+
+end_multiply:
+    mv a0, t0
+
+    ret

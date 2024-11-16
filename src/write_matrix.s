@@ -63,6 +63,12 @@ write_matrix:
 
     # mul s4, s2, s3   # s4 = total elements
     # FIXME: Replace 'mul' with your own implementation
+    mv t0, a0
+    add a0, s2, x0
+    add a1, s3, x0
+    jal multiply
+    mv s4, a0
+    mv a0, t0
 
     # write matrix data to file
     mv a0, s0
@@ -113,3 +119,37 @@ error_exit:
     lw s4, 20(sp)
     addi sp, sp, 44
     j exit
+
+# =======================================================
+# FUNCTION: Multilply 2 numbers
+#
+# Args:
+#   a0 (int): multiplier
+#   a1 (int): multiplicand
+#
+# Returns:
+#   a0 (int):   answer 
+# =======================================================
+multiply:
+    addi sp, sp, -4          # push stack space
+    sw ra, 0(sp)           
+
+    li t0, 0                  # Initialize result
+multiply_loop:
+    beqz a0, end_multiply         # Exit if multiplier (t8) is zero
+    andi t1, a0, 1               # Check if lowest bit of multiplier is 1
+    beqz t1, skip_addition       # If not, skip addition
+    add t0, t0, a1                # Add multiplicand to result
+
+skip_addition:
+    slli a1, a1, 1                # Shift multiplicand left
+    srli a0, a0, 1                # Shift multiplier right
+    j multiply_loop               # Repeat
+
+end_multiply:
+    mv a0, t0
+        
+    lw ra, 0(sp)
+    addi sp, sp, 4          # push stack space
+    
+    ret

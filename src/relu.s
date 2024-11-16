@@ -29,6 +29,20 @@ relu:
 
 loop_start:
     # TODO: Add your own implementation
+    beq t1, a1, loop_end # if index == a1 -> end
+    slli t3, t1, 2       # t1 = 4 * index
+    add t2, t3, a0       # t2 = pointer + 4 * index
+    lw t3, 0(t2)         # t1 = array[index]
+    bgez t3, loop        # if array[index] < 0 -> array[index] = 0
+    sw x0, 0(t2)
+    j loop_start
+
+loop:         
+    addi t1, t1, 1
+    j loop_start
+
+loop_end:
+    ret
 
 error:
     li a0, 36          

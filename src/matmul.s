@@ -36,11 +36,11 @@
 matmul:
     # Error checks
     li t0 1
-    blt a1, t0, error
+    blt a1, t0, error # check
     blt a2, t0, error
     blt a4, t0, error
     blt a5, t0, error
-    bne a2, a4, error
+    bne a2, a4, error # check M0_cols = M1_rows
 
     # Prologue
     addi sp, sp, -28
@@ -61,7 +61,7 @@ matmul:
     
 outer_loop_start:
     #s0 is going to be the loop counter for the rows in A
-    li s1, 0
+    li s1, 0    # inner loop counter = 0
     mv s4, a3
     blt s0, a1, inner_loop_start
 
@@ -77,6 +77,7 @@ inner_loop_start:
 #   a4 (int)  is the stride of arr1 = for B, stride = len(rows) - 1
 # Returns:
 #   a0 (int)  is the dot product of arr0 and arr1
+
     beq s1, a5, inner_loop_end
 
     addi sp, sp, -24
@@ -116,6 +117,22 @@ inner_loop_start:
     
 inner_loop_end:
     # TODO: Add your own implementation
+    addi s0, s0, 1 # outer_loop counter += 1
+    slli t0, a2, 2 # M1 col << 2
+    add  s3, s3, t0 # pointer += M1 col << 2
+    j outer_loop_start
+
+outer_loop_end:
+    lw ra, 0(sp)
+    lw s0, 4(sp)
+    lw s1, 8(sp)
+    lw s2, 12(sp)
+    lw s3, 16(sp)
+    lw s4, 20(sp)
+    lw s5, 24(sp)
+    addi sp, sp, 28
+
+    ret
 
 error:
     li a0, 38

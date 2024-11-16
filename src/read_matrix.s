@@ -74,9 +74,14 @@ read_matrix:
     sw t1, 0(s3)     # saves num rows
     sw t2, 0(s4)     # saves num cols
 
+
     # mul s1, t1, t2   # s1 is number of elements
     # FIXME: Replace 'mul' with your own implementation
-
+    mv a0, t1
+    mv a1, t2 
+    jal multiply
+    mv s1, a0
+    
     slli t3, s1, 2
     sw t3, 24(sp)    # size in bytes
 
@@ -143,3 +148,37 @@ error_exit:
     lw s4, 20(sp)
     addi sp, sp, 40
     j exit
+
+# =======================================================
+# FUNCTION: Multilply 2 numbers
+#
+# Args:
+#   a0 (int): multiplier
+#   a1 (int): multiplicand
+#
+# Returns:
+#   a0 (int):   answer 
+# =======================================================
+multiply:
+    addi sp, sp, -4          # push stack space
+    sw ra, 0(sp)           
+
+    li t0, 0                  # Initialize result
+multiply_loop:
+    beqz a0, end_multiply         # Exit if multiplier (t8) is zero
+    andi t1, a0, 1               # Check if lowest bit of multiplier is 1
+    beqz t1, skip_addition       # If not, skip addition
+    add t0, t0, a1                # Add multiplicand to result
+
+skip_addition:
+    slli a1, a1, 1                # Shift multiplicand left
+    srli a0, a0, 1                # Shift multiplier right
+    j multiply_loop               # Repeat
+
+end_multiply:
+    mv a0, t0
+        
+    lw ra, 0(sp)
+    addi sp, sp, 4          # push stack space
+    
+    ret
