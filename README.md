@@ -4,7 +4,7 @@ Therefore, the document will primarily explain the multiplier and dot.s,
 while other explanations will be provided in the comments within the code.
 
 # Multiplier
-
+```riscv=
 FUNCTION: Multilply 2 numbers   
 Args:   
    a0 (int): multiplier   
@@ -31,3 +31,4 @@ skip_addition:
 end_multiply:
     mv a0, t2
     ret
+```
