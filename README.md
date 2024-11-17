@@ -38,10 +38,14 @@ end_multiply:
     ret
 ```
 
+Interestingly, in my multiply function, swapping a0 and a1 results in a significant performance difference. The current version takes 45 seconds to complete the entire test, but if a0 and a1 are swapped, it takes 55 seconds.    
+
+I currently can't figure out what causes this. I believe that differences in register usage alone shouldn't lead to such a large performance gap.
+
 # dot.s
 
-dot.s is used to perform the dot product of two matrices, which involves multiplying the values at corresponding indices in the arrays.
-
+dot.s is used to perform the dot product of two matrices, which involves multiplying the values at corresponding indices in the arrays.    
+    
 Initially, I calculated the indices using i * stride. Later, I realized that simply adding stride * sizeof(int) in each iteration of the loop works just as well. As a result, the performance improved significantly compared to before.
 ```riscv=
 # =======================================================
@@ -108,3 +112,5 @@ loop_end:
     addi sp, sp, 12  # push stack space
     jr ra
 ```
+# Test Results
+![image](https://github.com/user-attachments/assets/173a3375-f50c-4fbe-bff4-af3507dc21e4)
